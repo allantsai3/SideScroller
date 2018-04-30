@@ -3,6 +3,7 @@
 #include <iostream>
 #include "GLFW/glfw3.h"
 #include "../Engine/Graphics/Graphics.h"
+#include "../Engine/Engine.h"
 
 Sprites::Sprites() {
 	std::cout << "default position set" << std::endl;
@@ -10,12 +11,15 @@ Sprites::Sprites() {
 	yPos = 0.0f;
 }
 
-void Sprites::setPos(float x, float y) {
-	xPos = x;
-	yPos = y;
+void Sprites::setPos(int x, int y) {
+	xPos = ((2 / (float)Engine::SCREEN_WIDTH) * x) - 1;
+	yPos = ((2 / (float)Engine::SCREEN_HEIGHT) * y) - 1;
+
 }
 
-void Sprites::InitializeSprite() {
+void Sprites::InitializeSprite(int initialHeight, int initialWidth, std::string color) {
+	height = (initialHeight / (float)Engine::SCREEN_HEIGHT) * 2;
+	width = (initialWidth / (float)Engine::SCREEN_WIDTH) * 2;
 
 	glGenVertexArrays(1, &VAO);
 
@@ -23,7 +27,7 @@ void Sprites::InitializeSprite() {
 
 	glGenBuffers(1, &EBO);
 
-
+	std::cout << color << std::endl;
 	//Shader
 	std::string vertexShader = "#version 330 core\n"
 		"\n"
@@ -40,7 +44,7 @@ void Sprites::InitializeSprite() {
 		"\n"
 		"void main()\n"
 		"{\n"
-		"   color = vec4(1.0, 0.0, 0.0, 1.0);\n"
+		"   color = vec4" + color + ";\n"
 		"}\n";
 
 	shader = Graphics::CreateShader(vertexShader, fragmentShader);
@@ -54,11 +58,10 @@ void Sprites::Update() {
 void Sprites::Render() {
 	const float square[4][3] = {
 		{ xPos, yPos, 0.0f }, /* Top Left */
-	{ xPos + 0.2f, yPos, 0.0f }, /* Top Right */
-	{ xPos + 0.2f, yPos - 0.2f, 0.0f }, /* Bottom Right */
-	{ xPos, yPos - 0.2f, 0.0f } /* Bottom Left */
+	{ xPos + width, yPos, 0.0f }, /* Top Right */
+	{ xPos + width, yPos - height, 0.0f }, /* Bottom Right */
+	{ xPos, yPos - height, 0.0f } /* Bottom Left */
 	};
-
 
 	////Vertex Array Object
 	//glGenVertexArrays(1, &VAO);

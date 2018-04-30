@@ -19,24 +19,28 @@ int main() {
 	char * titleptr = GameTitle;
 	engine.Initialize(titleptr);
 
+	//Player
 	Sprites* playerObjs = new Player[1];
-	playerObjs[0].setPos(0.0f, 0.0f);
+	playerObjs[0].setPos(200, 200);
 
-	vector<Sprites*> testSprite;
-	for (int index = 0; index < 5; index++) {
-		testSprite.push_back(getSprite());
+
+	// Wall
+	vector<Sprites*> boundary;
+	for (int index = 0; index < 4; index++) {
+		boundary.push_back(getSprite());
 	}
 
-	for (int index = 0; index < 5; index++) {
-		testSprite[index]->InitializeSprite();
-	}
-	
-	//Sprites* testSprite = new Sprites[1];
-	testSprite[0]->setPos(-1.0f, 1.0f);
-	testSprite[1]->setPos(-1.0f, .8f);
-	testSprite[2]->setPos(-1.0f, .6f);
-	testSprite[3]->setPos(-1.0f, .4f);
-	testSprite[4]->setPos(-1.0f, .2f);
+	const int thickness = 50;
+	boundary[0]->InitializeSprite(768, thickness, "(1.0, 0.0, 0.0, 1.0)"); //left
+	boundary[0]->setPos(0, 768);
+	boundary[1]->InitializeSprite(thickness, 1024 - 2 * thickness, "(1.0, 0.0, 0.0, 1.0)"); //top
+	boundary[1]->setPos(thickness, 768);
+	boundary[2]->InitializeSprite(768, thickness, "(1.0, 0.0, 0.0, 1.0)"); //right
+	boundary[2]->setPos(1024 - thickness, 768);
+	boundary[3]->InitializeSprite(thickness, 1024 - 2 * thickness, "(1.0, 0.0, 0.0, 1.0)"); //bottom
+	boundary[3]->setPos(thickness, thickness);
+
+	//TODO : clean up the rendering process
 
 	while (true) {
 		engine.Update();
@@ -45,8 +49,8 @@ int main() {
 		engine.BeginRender();
 		playerObjs[0].Render();
 
-		for (int index = 0; index < 5; index++) {
-			testSprite[index]->Render();
+		for (int index = 0; index < 4; index++) {
+			boundary[index]->Render();
 		}
 
 		//testSprite[0].Render();
@@ -55,5 +59,5 @@ int main() {
 	}
 
 	delete[] playerObjs;
-	//delete[] testSprite;
+
 }

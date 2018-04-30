@@ -4,66 +4,40 @@
 #include "../Engine/Graphics/Graphics.h"
 #include "GLFW/glfw3.h"
 #include "../IO/Input.h"
+#include "../Engine/Engine.h"
 
 Player::Player() {
-	InitializePlayer();
+	InitializeSprite();
 	std::cout << "Player initialized" << std::endl;
 }
 
-void Player::InitializePlayer() {
-	//https://www.khronos.org/opengl/wiki/Tutorial2:_VAOs,_VBOs,_Vertex_and_Fragment_Shaders_(C_/_SDL)
-
-	glGenVertexArrays(1, &VAO);
-
-	glGenBuffers(1, &VBO);
-
-	glGenBuffers(1, &EBO);
-
-
-	//Shader
-	std::string vertexShader = "#version 330 core\n"
-		"\n"
-		"layout(location = 0) in vec4 position;\n"  //location = index of attribute
-		"\n"
-		"void main()\n"
-		"{\n"
-		"   gl_Position = position;\n"
-		"}\n";
-
-	std::string fragmentShader = "#version 330 core\n"
-		"\n"
-		"layout(location = 0) out vec4 color;"  //location = index of attribute
-		"\n"
-		"void main()\n"
-		"{\n"
-		"   color = vec4(0.0, 0.0, 0.0, 1.0);\n"
-		"}\n";
-
-	shader = Graphics::CreateShader(vertexShader, fragmentShader);
-}
 
 void Player::Update() {
 
+	float curX = (xPos + 1) * ((float)Engine::SCREEN_WIDTH / 2);
+	float curY = (yPos + 1) * ((float)Engine::SCREEN_HEIGHT / 2);
+
 	if (Input::keyPressed(GLFW_KEY_A)) {
-		xVel =- 0.01f;
+		xVel = -5;
 	}
 	else if(Input::keyPressed(GLFW_KEY_D)) {
-		xVel = 0.01f;
+		xVel = 5;
 	}
 	else {
-		xVel = 0.0f;
+		xVel = 0;
 	}
 
-	setPos(xPos + xVel, yPos - yVel);
+
+	setPos(curX + xVel, curY + yVel);
 
 
 }
 void Player::Render() {
 	const float square[4][3] = {
 		{ xPos, yPos, 0.0f }, /* Top Left */
-	{ xPos + 0.2f, yPos, 0.0f }, /* Top Right */
-	{ xPos + 0.2f, yPos - 0.2f, 0.0f }, /* Bottom Right */
-	{ xPos, yPos - 0.2f, 0.0f } /* Bottom Left */
+	{ xPos + width, yPos, 0.0f }, /* Top Right */
+	{ xPos + width, yPos - height, 0.0f }, /* Bottom Right */
+	{ xPos, yPos - height, 0.0f } /* Bottom Left */
 	};
 
 

@@ -20,7 +20,7 @@ void Input::KeyCallBack(GLFWwindow* window, int key, int scancode, int action, i
 }
 
 bool Input::keyPressed(int key) {
-	if (key == keyState && keyAction == GLFW_PRESS) {
+	if (key == keyState && (keyAction == GLFW_PRESS || keyAction == GLFW_REPEAT)) {
 		return true;
 	}
 

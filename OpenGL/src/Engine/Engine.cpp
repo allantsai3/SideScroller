@@ -97,6 +97,8 @@ void Engine::EndRender(){
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-	glViewport(0, 0, width, height);
-	std::cout << "resized to W:" << width << " H:" << height << std::endl;
+	Engine::SCREEN_HEIGHT = height;
+	Engine::SCREEN_WIDTH = width;
+	glViewport(0, 0, Engine::SCREEN_WIDTH, Engine::SCREEN_HEIGHT);
+	std::cout << "resized to W:" << Engine::SCREEN_WIDTH << " H:" << Engine::SCREEN_HEIGHT << std::endl;
 }

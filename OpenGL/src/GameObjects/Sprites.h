@@ -8,9 +8,9 @@ class Sprites {
 public:
 	Sprites();
 
-	void setPos(float x, float y);
+	void setPos(int x, int y);
 
-	void InitializeSprite();
+	void InitializeSprite(int initialHeight = 50, int initialWidth = 50, std::string color = "(0.0, 0.0, 0.0, 1.0)");
 
 	virtual void Update();
 	virtual void Render();
@@ -24,6 +24,8 @@ protected:
 
 	float xPos;
 	float yPos;
+	float height = 0.2f;
+	float width = 0.2f;
 
 	const unsigned int squareIndices[6] = {
 		0, 1, 3, //first triangle
