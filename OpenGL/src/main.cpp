@@ -1,6 +1,9 @@
 #include "Engine/Engine.h"
 #include <iostream>
 #include "GameObjects/Player.h"
+#include <vector>
+#include <memory>
+#include "GameObjects/Sprites.h"
 
 using namespace std;
 
@@ -18,8 +21,22 @@ int main() {
 
 	Sprites* playerObjs = new Player[1];
 	playerObjs[0].setPos(0.0f, 0.0f);
+
+	vector<Sprites*> testSprite;
+	for (int index = 0; index < 5; index++) {
+		testSprite.push_back(getSprite());
+	}
+
+	for (int index = 0; index < 5; index++) {
+		testSprite[index]->InitializeSprite();
+	}
 	
-	Sprites* testSprite = new Sprites[1];
+	//Sprites* testSprite = new Sprites[1];
+	testSprite[0]->setPos(-1.0f, 1.0f);
+	testSprite[1]->setPos(-1.0f, .8f);
+	testSprite[2]->setPos(-1.0f, .6f);
+	testSprite[3]->setPos(-1.0f, .4f);
+	testSprite[4]->setPos(-1.0f, .2f);
 
 	while (true) {
 		engine.Update();
@@ -27,11 +44,16 @@ int main() {
 
 		engine.BeginRender();
 		playerObjs[0].Render();
-		testSprite[0].Render();
+
+		for (int index = 0; index < 5; index++) {
+			testSprite[index]->Render();
+		}
+
+		//testSprite[0].Render();
 
 		engine.EndRender();
 	}
 
 	delete[] playerObjs;
-	delete[] testSprite;
+	//delete[] testSprite;
 }

@@ -43,9 +43,6 @@ void Player::InitializePlayer() {
 }
 
 void Player::Update() {
-	float x = getxPos();
-	float y = getyPos();
-
 
 	if (Input::keyPressed(GLFW_KEY_A)) {
 		xVel =- 0.01f;
@@ -57,16 +54,16 @@ void Player::Update() {
 		xVel = 0.0f;
 	}
 
-	setPos(x + xVel, y - yVel);
+	setPos(xPos + xVel, yPos - yVel);
 
 
 }
 void Player::Render() {
-	float square[4][3] = {
-		{ getxPos(), getyPos(), 0.0f }, /* Top Left */
-	{ getxPos() + 0.2f, getyPos(), 0.0f }, /* Top Right */
-	{ getxPos() + 0.2f, getyPos() - 0.2f, 0.0f }, /* Bottom Right */
-	{ getxPos(), getyPos() - 0.2f, 0.0f } /* Bottom Left */
+	const float square[4][3] = {
+		{ xPos, yPos, 0.0f }, /* Top Left */
+	{ xPos + 0.2f, yPos, 0.0f }, /* Top Right */
+	{ xPos + 0.2f, yPos - 0.2f, 0.0f }, /* Bottom Right */
+	{ xPos, yPos - 0.2f, 0.0f } /* Bottom Left */
 	};
 
 
@@ -82,7 +79,7 @@ void Player::Render() {
 	//Element buffer Object
 	//glGenBuffers(1, &EBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(squareIndices), squareIndices, GL_DYNAMIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	glEnableVertexAttribArray(0);

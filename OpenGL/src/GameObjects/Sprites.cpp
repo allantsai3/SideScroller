@@ -15,28 +15,15 @@ void Sprites::setPos(float x, float y) {
 	yPos = y;
 }
 
-float Sprites::getxPos() {
-	return xPos;
-}
-float Sprites::getyPos() {
-	return yPos;
-}
+void Sprites::InitializeSprite() {
 
-void Sprites::Update() {
+	glGenVertexArrays(1, &VAO);
 
-}
-
-void Sprites::Render() {
-	float posit[] = {
-		-1.0f, 0.0f, 1.0f,
-		0.0f, 0.0f, 1.0f,
-		-1.0f, -1.0f, 1.0f
-	};
-
-	unsigned int VBO;
 	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(posit), posit, GL_DYNAMIC_DRAW);
+
+	glGenBuffers(1, &EBO);
+
+
 	//Shader
 	std::string vertexShader = "#version 330 core\n"
 		"\n"
@@ -56,11 +43,48 @@ void Sprites::Render() {
 		"   color = vec4(1.0, 0.0, 0.0, 1.0);\n"
 		"}\n";
 
-	unsigned int shader = Graphics::CreateShader(vertexShader, fragmentShader);
-	glUseProgram(shader);  //binding shader
+	shader = Graphics::CreateShader(vertexShader, fragmentShader);
+}
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL);
+
+void Sprites::Update() {
+
+}
+
+void Sprites::Render() {
+	const float square[4][3] = {
+		{ xPos, yPos, 0.0f }, /* Top Left */
+	{ xPos + 0.2f, yPos, 0.0f }, /* Top Right */
+	{ xPos + 0.2f, yPos - 0.2f, 0.0f }, /* Bottom Right */
+	{ xPos, yPos - 0.2f, 0.0f } /* Bottom Left */
+	};
+
+
+	////Vertex Array Object
+	//glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+
+	////Vertex Buffer Object
+	//glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(square), square, GL_DYNAMIC_DRAW);
+
+	//Element buffer Object
+	//glGenBuffers(1, &EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(squareIndices), squareIndices, GL_DYNAMIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	glEnableVertexAttribArray(0);
 
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+
+
+	glUseProgram(shader);  //binding shader
+
+	glBindVertexArray(VAO);
+
+	//glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
 }
