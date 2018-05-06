@@ -3,6 +3,9 @@
 
 #include <string.h>
 #include <iostream>
+#include <vector>
+
+const int wallThickness = 50;
 
 class Sprites {
 public:
@@ -11,6 +14,7 @@ public:
 	void setPos(int x, int y);
 
 	void InitializeSprite(int initialHeight = 50, int initialWidth = 50, std::string color = "(0.0, 0.0, 0.0, 1.0)");
+	void createBoundary();
 
 	virtual void Update();
 	virtual void Render();
@@ -24,18 +28,16 @@ protected:
 
 	float xPos;
 	float yPos;
-	float height = 0.2f;
-	float width = 0.2f;
+	float height;
+	float width;
 
 	const unsigned int squareIndices[6] = {
 		0, 1, 3, //first triangle
 		1, 2, 3 // second triangle
 	};
+
+
 };
 
-static Sprites* getSprite() {
-	Sprites* sprite = new Sprites;
-	return sprite;
-}
 
 #endif //SPRITES_H

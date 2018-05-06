@@ -90,7 +90,7 @@ void Engine::BeginRender() {
 }
 
 void Engine::EndRender(){
-
+	
 	/* Swap front and back buffers */
 	glfwSwapBuffers(window);
 

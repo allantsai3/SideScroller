@@ -5,6 +5,8 @@
 #include "../Engine/Graphics/Graphics.h"
 #include "../Engine/Engine.h"
 
+static std::vector<Sprites*> envSprites;
+
 Sprites::Sprites() {
 	std::cout << "default position set" << std::endl;
 	xPos = 0.0f;
@@ -50,44 +52,66 @@ void Sprites::InitializeSprite(int initialHeight, int initialWidth, std::string 
 	shader = Graphics::CreateShader(vertexShader, fragmentShader);
 }
 
+void Sprites::createBoundary()
+{
+	for (int index = 0; index < 4; index++) {
+		envSprites.push_back(new Sprites);
+	}
+
+	//TODO: Spatial partitioning using quad tree?
+
+
+	envSprites[0]->InitializeSprite(768, wallThickness, "(1.0, 0.0, 0.0, 1.0)"); //left
+	envSprites[0]->setPos(0, 768);
+	envSprites[1]->InitializeSprite(wallThickness, 1024 - 2 * wallThickness, "(1.0, 0.0, 0.0, 1.0)"); //top
+	envSprites[1]->setPos(wallThickness, 768);
+	envSprites[2]->InitializeSprite(768, wallThickness, "(1.0, 0.0, 0.0, 1.0)"); //right
+	envSprites[2]->setPos(1024 - wallThickness, 768);
+	envSprites[3]->InitializeSprite(wallThickness, 1024 - 2 * wallThickness, "(1.0, 0.0, 0.0, 1.0)"); //bottom
+	envSprites[3]->setPos(wallThickness, wallThickness);
+
+}
+
 
 void Sprites::Update() {
 
 }
 
 void Sprites::Render() {
-	const float square[4][3] = {
-		{ xPos, yPos, 0.0f }, /* Top Left */
-	{ xPos + width, yPos, 0.0f }, /* Top Right */
-	{ xPos + width, yPos - height, 0.0f }, /* Bottom Right */
-	{ xPos, yPos - height, 0.0f } /* Bottom Left */
-	};
+	for (auto index = 0; index < envSprites.size();index++) {
+		const float square[4][3] = {
+			{ envSprites[index]->xPos, envSprites[index]->yPos, 0.0f }, /* Top Left */
+		{ envSprites[index]->xPos + envSprites[index]->width, envSprites[index]->yPos, 0.0f }, /* Top Right */
+		{ envSprites[index]->xPos + envSprites[index]->width, envSprites[index]->yPos - envSprites[index]->height, 0.0f }, /* Bottom Right */
+		{ envSprites[index]->xPos, envSprites[index]->yPos - envSprites[index]->height, 0.0f } /* Bottom Left */
+		};
 
-	////Vertex Array Object
-	//glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
+		////Vertex Array Object
+		//glGenVertexArrays(1, &VAO);
+		glBindVertexArray(envSprites[index]->VAO);
 
-	////Vertex Buffer Object
-	//glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(square), square, GL_DYNAMIC_DRAW);
+		////Vertex Buffer Object
+		//glGenBuffers(1, &VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, envSprites[index]->VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(square), square, GL_DYNAMIC_DRAW);
 
-	//Element buffer Object
-	//glGenBuffers(1, &EBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(squareIndices), squareIndices, GL_DYNAMIC_DRAW);
+		//Element buffer Object
+		//glGenBuffers(1, &EBO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, envSprites[index]->EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(squareIndices), squareIndices, GL_DYNAMIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+		glEnableVertexAttribArray(0);
 
 
 
-	glUseProgram(shader);  //binding shader
+		glUseProgram(envSprites[index]->shader);  //binding shader
 
-	glBindVertexArray(VAO);
+		glBindVertexArray(envSprites[index]->VAO);
 
-	//glDrawArrays(GL_TRIANGLES, 0, 6);
+		//glDrawArrays(GL_TRIANGLES, 0, 6);
 
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
+	}
 }
